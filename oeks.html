@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ОЭКС Сводка</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #4682b4;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .panel {
+            background-color: #f1f8ff;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table td, .table th {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .editable {
+            background-color: #ffffe0;
+        }
+
+        .horizontal-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .horizontal-row .panel {
+            width: 18%;
+        }
+
+        .table-title {
+            background-color: #4682b4;
+            color: white;
+            text-align: center;
+            padding: 5px 0;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <div class="header">ОЭКС СВОДКА</div>
+
+        <!-- Header Table -->
+        <div class="panel">
+            <table class="table" id="header-table">
+                <tr>
+                    <th>ЖАМИ ГПАЛАР</th>
+                    <th>ИШЧИ</th>
+                    <th>ЗАХИРАДА</th>
+                    <th>ТАЪМИРДА</th>
+                    <th>КИЧИК КОМПРЕССОРЛАР</th>
+                    <th>ИШЧИ</th>
+                    <th>ЗАХИРАДА</th>
+                    <th>ТАЪМИРДА</th>
+                </tr>
+                <tr>
+                    <td contenteditable="true">A</td>
+                    <td contenteditable="true">B</td>
+                    <td contenteditable="true">C</td>
+                    <td contenteditable="true">D</td>
+                    <td contenteditable="true">E</td>
+                    <td contenteditable="true">F</td>
+                    <td contenteditable="true">G</td>
+                    <td contenteditable="true">H</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Horizontal Row of Tables -->
+        <div class="horizontal-row">
+            <div class="panel">
+                <div class="table-title">Станцион корсаткичлар</div>
+                <table class="table">
+                    <tr>
+                        <td contenteditable="true">1</td>
+                        <td contenteditable="true">2</td>
+                        <td contenteditable="true">3</td>
+                        <td contenteditable="true">4</td>
+                        <td contenteditable="true">5</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">6</td>
+                        <td contenteditable="true">7</td>
+                        <td contenteditable="true">8</td>
+                        <td contenteditable="true">9</td>
+                        <td contenteditable="true">10</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">11</td>
+                        <td contenteditable="true">12</td>
+                        <td contenteditable="true">13</td>
+                        <td contenteditable="true">14</td>
+                        <td contenteditable="true">15</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">16</td>
+                        <td contenteditable="true">17</td>
+                        <td contenteditable="true">18</td>
+                        <td contenteditable="true">19</td>
+                        <td contenteditable="true">20</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">21</td>
+                        <td contenteditable="true">22</td>
+                        <td contenteditable="true">23</td>
+                        <td contenteditable="true">24</td>
+                        <td contenteditable="true">25</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="panel">
+                <div class="table-title">
+                    Дополнение
+                </div>
+                <table class="table">
+                    <tr>
+                        <td contenteditable="true">1</td>
+                        <td contenteditable="true">2</td>
+                        <td contenteditable="true">3</td>
+                        <td contenteditable="true">4</td>
+                        <td contenteditable="true">5</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">6</td>
+                        <td contenteditable="true">7</td>
+                        <td contenteditable="true">8</td>
+                        <td contenteditable="true">9</td>
+                        <td contenteditable="true">10</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">11</td>
+                        <td contenteditable="true">12</td>
+                        <td contenteditable="true">13</td>
+                        <td contenteditable="true">14</td>
+                        <td contenteditable="true">15</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">16</td>
+                        <td contenteditable="true">17</td>
+                        <td contenteditable="true">18</td>
+                        <td contenteditable="true">19</td>
+                        <td contenteditable="true">20</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">21</td>
+                        <td contenteditable="true">22</td>
+                        <td contenteditable="true">23</td>
+                        <td contenteditable="true">24</td>
+                        <td contenteditable="true">25</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="panel">
+                <div class="table-title">Муборак НГКЧБ</div>
+                <table class="table">
+                    <tr>
+                        <td contenteditable="true">1</td>
+                        <td contenteditable="true">2</td>
+                        <td contenteditable="true">3</td>
+                        <td contenteditable="true">4</td>
+                        <td contenteditable="true">5</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">6</td>
+                        <td contenteditable="true">7</td>
+                        <td contenteditable="true">8</td>
+                        <td contenteditable="true">9</td>
+                        <td contenteditable="true">10</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">11</td>
+                        <td contenteditable="true">12</td>
+                        <td contenteditable="true">13</td>
+                        <td contenteditable="true">14</td>
+                        <td contenteditable="true">15</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">16</td>
+                        <td contenteditable="true">17</td>
+                        <td contenteditable="true">18</td>
+                        <td contenteditable="true">19</td>
+                        <td contenteditable="true">20</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">21</td>
+                        <td contenteditable="true">22</td>
+                        <td contenteditable="true">23</td>
+                        <td contenteditable="true">24</td>
+                        <td contenteditable="true">25</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="panel">
+                <div class="table-title">СТанцион корсаткичлар</div>
+                <table class="table">
+                    <tr>
+                        <td contenteditable="true">1</td>
+                        <td contenteditable="true">2</td>
+                        <td contenteditable="true">3</td>
+                        <td contenteditable="true">4</td>
+                        <td contenteditable="true">5</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">6</td>
+                        <td contenteditable="true">7</td>
+                        <td contenteditable="true">8</td>
+                        <td contenteditable="true">9</td>
+                        <td contenteditable="true">10</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">11</td>
+                        <td contenteditable="true">12</td>
+                        <td contenteditable="true">13</td>
+                        <td contenteditable="true">14</td>
+                        <td contenteditable="true">15</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">16</td>
+                        <td contenteditable="true">17</td>
+                        <td contenteditable="true">18</td>
+                        <td contenteditable="true">19</td>
+                        <td contenteditable="true">20</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">21</td>
+                        <td contenteditable="true">22</td>
+                        <td contenteditable="true">23</td>
+                        <td contenteditable="true">24</td>
+                        <td contenteditable="true">25</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="panel">
+                <div class="table-title">Дополнение</div>
+                <table class="table">
+                    <tr>
+                        <td contenteditable="true" id="cell1">1</td>
+                        <td contenteditable="true" id="cell2">1</td>
+                        <td contenteditable="true" id="cell3">1</td>
+                        <td contenteditable="true" id="cell4">1</td>
+                        <td contenteditable="true" id="cell5">1</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true" id="cell6">1</td>
+                        <td contenteditable="true" id="cell7">1</td>
+                        <td contenteditable="true" id="cell8">1</td>
+                        <td contenteditable="true" id="cell9">1</td>
+                        <td contenteditable="true" id="cell10">1</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true" id="cell11">1</td>
+                        <td contenteditable="true" id="cell12">1</td>
+                        <td contenteditable="true" id="cell13">1</td>
+                        <td contenteditable="true" id="cell14">1</td>
+                        <td contenteditable="true" id="cell15">1</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true" id="cell16">1</td>
+                        <td contenteditable="true" id="cell17">1</td>
+                        <td contenteditable="true" id="cell18">1</td>
+                        <td contenteditable="true" id="cell19">1</td>
+                        <td contenteditable="true" id="cell20">1</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true" id="cell21">1</td>
+                        <td contenteditable="true" id="cell22">1</td>
+                        <td contenteditable="true" id="cell23">1</td>
+                        <td contenteditable="true" id="cell24">1</td>
+                        <td contenteditable="true" id="cell25">1</td>
+                    </tr>
+                    
+                </table>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/tabletop@1.6.1/dist/tabletop.js"></script>
+
+    <script>
+        // Save table data to localStorage
+        document.querySelectorAll('.table').forEach((table, index) => {
+            table.addEventListener('input', () => {
+                const data = Array.from(table.rows).map(row => 
+                    Array.from(row.cells).map(cell => cell.textContent)
+                );
+                localStorage.setItem(`table${index}`, JSON.stringify(data));
+            });
+        });
+
+        // Load table data from localStorage
+        document.querySelectorAll('.table').forEach((table, index) => {
+            const data = JSON.parse(localStorage.getItem(`table${index}`));
+            if (data) {
+                data.forEach((row, i) => {
+                    row.forEach((cell, j) => {
+                        table.rows[i].cells[j].textContent = cell;
+                    });
+                });
+            }
+        });
+    </script>
+
+    <!-- ========================================================= -->
+    <script>
+        // Ссылка на CSV файл с данными
+        const csvUrl = "https://docs.google.com/spreadsheets/d/1QjizQXOtSEll4qzW07h3ZpAnifuEpf8Fu35tOxQgc4U/export?format=csv&id=1QjizQXOtSEll4qzW07h3ZpAnifuEpf8Fu35tOxQgc4U&gid=0";
+      
+        // Функция для загрузки CSV и обработки данных
+        function loadCSV() {
+          fetch(csvUrl)
+            .then(response => response.text())
+            .then(data => {
+              const rows = data.split("\n");
+              let cellIndex = 1; // Начнем с первой ячейки в таблице
+      
+              // Перебираем строки CSV
+              rows.forEach(row => {
+                const columns = row.split(","); // Разделяем строку на столбцы
+                columns.forEach((cell, colIndex) => {
+                  const cellId = `cell${cellIndex}`;
+                  if (document.getElementById(cellId)) {
+                    document.getElementById(cellId).textContent = cell.trim(); // Заполняем ячейку
+                  }
+                  cellIndex++; // Переходим к следующей ячейке
+                });
+              });
+            })
+            .catch(error => console.error('Ошибка загрузки CSV:', error));
+        }
+      
+        // Загружаем данные после загрузки страницы
+        window.onload = loadCSV;
+      </script>
+      
+<!-- ////////////////////////////////////////////////////////////// -->
+</body>
+</html>
