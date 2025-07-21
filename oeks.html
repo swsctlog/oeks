@@ -1,375 +1,240 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ОЭКС Сводка</title>
+    <title>Панель управления - Собранные данные</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Leaflet.js для карт -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- Иконки -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #ffffff;
-            color: #000000;
+            background-color: #111827; /* Темно-синий фон */
         }
-
-        .dashboard {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .header {
-            background-color: #4682b4;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .panel {
-            background-color: #f1f8ff;
-            border-radius: 5px;
-            padding: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .table td, .table th {
-            border: 1px solid #dddddd;
-            padding: 8px;
-            text-align: center;
+        .dossier-card {
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
             cursor: pointer;
         }
-
-        .editable {
-            background-color: #ffffe0;
+        .dossier-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: #4f5b70;
         }
-
-        .horizontal-row {
-            display: flex;
-            justify-content: space-between;
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
         }
-
-        .horizontal-row .panel {
-            width: 18%;
-        }
-
-        .table-title {
-            background-color: #4682b4;
-            color: white;
-            text-align: center;
-            padding: 5px 0;
-            font-weight: bold;
-            margin-bottom: 5px;
+        #map {
+            height: 300px;
+            border-radius: 0.5rem;
+            z-index: 1; /* Чтобы карта была под контролами Leaflet */
         }
     </style>
 </head>
-<body>
-    <div class="dashboard">
-        <!-- Header -->
-        <div class="header">ОЭКС СВОДКА</div>
+<body class="text-gray-200 font-sans">
 
-        <!-- Header Table -->
-        <div class="panel">
-            <table class="table" id="header-table">
-                <tr>
-                    <th>ЖАМИ ГПАЛАР</th>
-                    <th>ИШЧИ</th>
-                    <th>ЗАХИРАДА</th>
-                    <th>ТАЪМИРДА</th>
-                    <th>КИЧИК КОМПРЕССОРЛАР</th>
-                    <th>ИШЧИ</th>
-                    <th>ЗАХИРАДА</th>
-                    <th>ТАЪМИРДА</th>
-                </tr>
-                <tr>
-                    <td contenteditable="true">A</td>
-                    <td contenteditable="true">B</td>
-                    <td contenteditable="true">C</td>
-                    <td contenteditable="true">D</td>
-                    <td contenteditable="true">E</td>
-                    <td contenteditable="true">F</td>
-                    <td contenteditable="true">G</td>
-                    <td contenteditable="true">H</td>
-                </tr>
-            </table>
+    <!-- Заголовок страницы -->
+    <header class="bg-gray-900 shadow-lg p-4 text-center">
+        <h1 class="text-3xl font-bold text-white">Панель управления данными</h1>
+        <p class="text-gray-400">Список полученных досье. Нажмите на карточку для просмотра деталей.</p>
+    </header>
+
+    <!-- Контейнер для карточек-досье -->
+    <main id="dossier-container" class="container mx-auto p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Сюда будут добавлены карточки -->
+        <div id="loader" class="col-span-full flex items-center justify-center p-10">
+            <i class="fas fa-spinner fa-spin fa-3x text-gray-500"></i>
+            <span class="ml-4 text-xl text-gray-500">Загрузка данных из БД...</span>
         </div>
+    </main>
 
-        <!-- Horizontal Row of Tables -->
-        <div class="horizontal-row">
-            <div class="panel">
-                <div class="table-title">Станцион корсаткичлар</div>
-                <table class="table">
-                    <tr>
-                        <td contenteditable="true">1</td>
-                        <td contenteditable="true">2</td>
-                        <td contenteditable="true">3</td>
-                        <td contenteditable="true">4</td>
-                        <td contenteditable="true">5</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">6</td>
-                        <td contenteditable="true">7</td>
-                        <td contenteditable="true">8</td>
-                        <td contenteditable="true">9</td>
-                        <td contenteditable="true">10</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">11</td>
-                        <td contenteditable="true">12</td>
-                        <td contenteditable="true">13</td>
-                        <td contenteditable="true">14</td>
-                        <td contenteditable="true">15</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">16</td>
-                        <td contenteditable="true">17</td>
-                        <td contenteditable="true">18</td>
-                        <td contenteditable="true">19</td>
-                        <td contenteditable="true">20</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">21</td>
-                        <td contenteditable="true">22</td>
-                        <td contenteditable="true">23</td>
-                        <td contenteditable="true">24</td>
-                        <td contenteditable="true">25</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="panel">
-                <div class="table-title">
-                    Дополнение
-                </div>
-                <table class="table">
-                    <tr>
-                        <td contenteditable="true">1</td>
-                        <td contenteditable="true">2</td>
-                        <td contenteditable="true">3</td>
-                        <td contenteditable="true">4</td>
-                        <td contenteditable="true">5</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">6</td>
-                        <td contenteditable="true">7</td>
-                        <td contenteditable="true">8</td>
-                        <td contenteditable="true">9</td>
-                        <td contenteditable="true">10</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">11</td>
-                        <td contenteditable="true">12</td>
-                        <td contenteditable="true">13</td>
-                        <td contenteditable="true">14</td>
-                        <td contenteditable="true">15</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">16</td>
-                        <td contenteditable="true">17</td>
-                        <td contenteditable="true">18</td>
-                        <td contenteditable="true">19</td>
-                        <td contenteditable="true">20</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">21</td>
-                        <td contenteditable="true">22</td>
-                        <td contenteditable="true">23</td>
-                        <td contenteditable="true">24</td>
-                        <td contenteditable="true">25</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="panel">
-                <div class="table-title">Муборак НГКЧБ</div>
-                <table class="table">
-                    <tr>
-                        <td contenteditable="true">1</td>
-                        <td contenteditable="true">2</td>
-                        <td contenteditable="true">3</td>
-                        <td contenteditable="true">4</td>
-                        <td contenteditable="true">5</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">6</td>
-                        <td contenteditable="true">7</td>
-                        <td contenteditable="true">8</td>
-                        <td contenteditable="true">9</td>
-                        <td contenteditable="true">10</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">11</td>
-                        <td contenteditable="true">12</td>
-                        <td contenteditable="true">13</td>
-                        <td contenteditable="true">14</td>
-                        <td contenteditable="true">15</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">16</td>
-                        <td contenteditable="true">17</td>
-                        <td contenteditable="true">18</td>
-                        <td contenteditable="true">19</td>
-                        <td contenteditable="true">20</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">21</td>
-                        <td contenteditable="true">22</td>
-                        <td contenteditable="true">23</td>
-                        <td contenteditable="true">24</td>
-                        <td contenteditable="true">25</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="panel">
-                <div class="table-title">СТанцион корсаткичлар</div>
-                <table class="table">
-                    <tr>
-                        <td contenteditable="true">1</td>
-                        <td contenteditable="true">2</td>
-                        <td contenteditable="true">3</td>
-                        <td contenteditable="true">4</td>
-                        <td contenteditable="true">5</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">6</td>
-                        <td contenteditable="true">7</td>
-                        <td contenteditable="true">8</td>
-                        <td contenteditable="true">9</td>
-                        <td contenteditable="true">10</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">11</td>
-                        <td contenteditable="true">12</td>
-                        <td contenteditable="true">13</td>
-                        <td contenteditable="true">14</td>
-                        <td contenteditable="true">15</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">16</td>
-                        <td contenteditable="true">17</td>
-                        <td contenteditable="true">18</td>
-                        <td contenteditable="true">19</td>
-                        <td contenteditable="true">20</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">21</td>
-                        <td contenteditable="true">22</td>
-                        <td contenteditable="true">23</td>
-                        <td contenteditable="true">24</td>
-                        <td contenteditable="true">25</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="panel">
-                <div class="table-title">Дополнение</div>
-                <table class="table">
-                    <tr>
-                        <td contenteditable="true" id="cell1">1</td>
-                        <td contenteditable="true" id="cell2">1</td>
-                        <td contenteditable="true" id="cell3">1</td>
-                        <td contenteditable="true" id="cell4">1</td>
-                        <td contenteditable="true" id="cell5">1</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true" id="cell6">1</td>
-                        <td contenteditable="true" id="cell7">1</td>
-                        <td contenteditable="true" id="cell8">1</td>
-                        <td contenteditable="true" id="cell9">1</td>
-                        <td contenteditable="true" id="cell10">1</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true" id="cell11">1</td>
-                        <td contenteditable="true" id="cell12">1</td>
-                        <td contenteditable="true" id="cell13">1</td>
-                        <td contenteditable="true" id="cell14">1</td>
-                        <td contenteditable="true" id="cell15">1</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true" id="cell16">1</td>
-                        <td contenteditable="true" id="cell17">1</td>
-                        <td contenteditable="true" id="cell18">1</td>
-                        <td contenteditable="true" id="cell19">1</td>
-                        <td contenteditable="true" id="cell20">1</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true" id="cell21">1</td>
-                        <td contenteditable="true" id="cell22">1</td>
-                        <td contenteditable="true" id="cell23">1</td>
-                        <td contenteditable="true" id="cell24">1</td>
-                        <td contenteditable="true" id="cell25">1</td>
-                    </tr>
+    <!-- Модальное окно для детального просмотра -->
+    <div id="modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div id="modal-content" class="bg-gray-800 rounded-lg shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 relative">
+            <!-- Кнопка закрытия -->
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white transition">
+                <i class="fas fa-times fa-2x"></i>
+            </button>
+            
+            <h2 class="text-2xl font-bold mb-4 text-white">Детальное досье</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Левая колонка: Фото и Карта -->
+                <div class="space-y-4">
+                    <!-- Фото -->
+                    <div id="modal-photo-container">
+                        <h3 class="font-bold text-lg text-gray-300">Фото с камеры</h3>
+                        <img id="modal-photo" src="" alt="Фото пользователя" class="rounded-lg w-full object-cover bg-gray-700">
+                    </div>
+                     <div id="modal-no-photo" class="text-gray-500">Фото не предоставлено.</div>
                     
-                </table>
+                    <!-- Карта -->
+                    <div id="modal-map-container">
+                        <h3 class="font-bold text-lg text-gray-300">Последняя геолокация</h3>
+                        <div id="map"></div>
+                    </div>
+                    <div id="modal-no-map" class="text-gray-500">Данные о геолокации отсутствуют.</div>
+                </div>
+
+                <!-- Правая колонка: Текстовые данные -->
+                <div id="modal-details" class="space-y-2 text-sm">
+                    <!-- Данные будут вставлены сюда -->
+                </div>
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/tabletop@1.6.1/dist/tabletop.js"></script>
 
     <script>
-        // Save table data to localStorage
-        document.querySelectorAll('.table').forEach((table, index) => {
-            table.addEventListener('input', () => {
-                const data = Array.from(table.rows).map(row => 
-                    Array.from(row.cells).map(cell => cell.textContent)
-                );
-                localStorage.setItem(`table${index}`, JSON.stringify(data));
-            });
-        });
+        // --- Конфигурация Supabase ---
+        const supabaseUrl = 'https://yqxbrbsxdkwcyafdkeld.supabase.co';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlxeGJyYnN4ZGt3Y3lhZmRrZWxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEwMTI3MTgsImV4cCI6MjA2NjU4ODcxOH0.i9h-YqUOYLLft5TFnU8UPYYXc6ixiHlIBVHuNTwgXfU';
+        const tableName = 'visitor_data';
 
-        // Load table data from localStorage
-        document.querySelectorAll('.table').forEach((table, index) => {
-            const data = JSON.parse(localStorage.getItem(`table${index}`));
-            if (data) {
-                data.forEach((row, i) => {
-                    row.forEach((cell, j) => {
-                        table.rows[i].cells[j].textContent = cell;
-                    });
+        // --- Элементы DOM ---
+        const dossierContainer = document.getElementById('dossier-container');
+        const loader = document.getElementById('loader');
+        const modal = document.getElementById('modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalContent = document.getElementById('modal-content');
+        let mapInstance = null; // Для хранения экземпляра карты
+
+        /**
+         * Функция для отображения детальной информации в модальном окне
+         */
+        function showDossierDetails(data) {
+            // Заполнение текстовых данных
+            const detailsContainer = document.getElementById('modal-details');
+            detailsContainer.innerHTML = `
+                <p><strong class="text-gray-400 w-32 inline-block">ID сессии:</strong> <span class="text-white font-mono">${data.cookie_id || 'N/A'}</span></p>
+                <p><strong class="text-gray-400 w-32 inline-block">IP Адрес:</strong> <span class="text-white font-mono">${data.public_ip || 'N/A'}</span></p>
+                <p><strong class="text-gray-400 w-32 inline-block">Дата:</strong> <span class="text-white">${new Date(data.created_at).toLocaleString()}</span></p>
+                <hr class="border-gray-600 my-2">
+                <p><strong class="text-gray-400 w-32 inline-block">ОС:</strong> <span class="text-white">${data.device_os || 'N/A'}</span></p>
+                <p><strong class="text-gray-400 w-32 inline-block">Разрешение:</strong> <span class="text-white">${data.screen_resolution || 'N/A'}</span></p>
+                <p><strong class="text-gray-400 w-32 inline-block">Язык:</strong> <span class="text-white">${data.browser_language || 'N/A'}</span></p>
+                <p class="break-all"><strong class="text-gray-400">User-Agent:</strong> <span class="text-white text-xs">${data.user_agent || 'N/A'}</span></p>
+                <hr class="border-gray-600 my-2">
+                <h4 class="font-bold text-gray-300 mt-3">Данные формы:</h4>
+                <p><strong class="text-gray-400 w-32 inline-block">Отдавал:</strong> <span class="text-white">${data.amount_from || ''} ${data.exchange_from || ''}</span></p>
+                <p><strong class="text-gray-400 w-32 inline-block">Получал:</strong> <span class="text-white">${data.exchange_to || ''}</span></p>
+                <p class="break-all"><strong class="text-gray-400 w-32 inline-block">Кошелек:</strong> <span class="text-white font-mono text-xs">${data.wallet_address || 'Не указан'}</span></p>
+            `;
+
+            // Отображение фото
+            const photoContainer = document.getElementById('modal-photo-container');
+            const noPhotoDiv = document.getElementById('modal-no-photo');
+            if (data.photo_base64) {
+                document.getElementById('modal-photo').src = data.photo_base64;
+                photoContainer.classList.remove('hidden');
+                noPhotoDiv.classList.add('hidden');
+            } else {
+                photoContainer.classList.add('hidden');
+                noPhotoDiv.classList.remove('hidden');
+            }
+
+            // Отображение карты
+            const mapContainer = document.getElementById('modal-map-container');
+            const noMapDiv = document.getElementById('modal-no-map');
+            if (mapInstance) {
+                mapInstance.remove(); // Удаляем предыдущую карту
+                mapInstance = null;
+            }
+
+            if (data.latitude && data.longitude) {
+                mapContainer.classList.remove('hidden');
+                noMapDiv.classList.add('hidden');
+                
+                // Инициализируем карту
+                mapInstance = L.map('map').setView([data.latitude, data.longitude], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(mapInstance);
+                L.marker([data.latitude, data.longitude]).addTo(mapInstance)
+                    .bindPopup('Предполагаемое местоположение')
+                    .openPopup();
+            } else {
+                mapContainer.classList.add('hidden');
+                noMapDiv.classList.remove('hidden');
+            }
+
+            // Показываем модальное окно
+            modal.classList.remove('hidden');
+        }
+
+        /**
+         * Функция для загрузки и отображения всех досье
+         */
+        async function loadDossiers() {
+            try {
+                const response = await fetch(`${supabaseUrl}/rest/v1/${tableName}?select=*&order=created_at.desc`, {
+                    headers: {
+                        'apikey': supabaseAnonKey,
+                        'Authorization': `Bearer ${supabaseAnonKey}`
+                    }
                 });
+                if (!response.ok) throw new Error(`Ошибка сети: ${response.statusText}`);
+                
+                const data = await response.json();
+                
+                loader.classList.add('hidden');
+                if (data.length === 0) {
+                    dossierContainer.innerHTML = '<p class="col-span-full text-center text-gray-500">В базе данных пока нет записей.</p>';
+                    return;
+                }
+
+                data.forEach(dossier => {
+                    const card = document.createElement('div');
+                    card.className = 'dossier-card rounded-lg p-4 flex flex-col';
+                    
+                    const hasGeo = dossier.latitude && dossier.longitude;
+                    const hasPhoto = dossier.photo_base64;
+
+                    card.innerHTML = `
+                        <div class="flex-grow">
+                            <p class="text-xs text-gray-400">${new Date(dossier.created_at).toLocaleString()}</p>
+                            <h3 class="font-bold text-lg text-white truncate" title="${dossier.cookie_id}">${dossier.cookie_id}</h3>
+                            <p class="text-sm text-gray-300 font-mono">${dossier.public_ip}</p>
+                        </div>
+                        <div class="flex items-center text-xs text-gray-500 mt-3 border-t border-gray-700 pt-2">
+                            <i class="fas fa-microchip mr-2"></i>
+                            <span>${dossier.device_os}</span>
+                            <div class="ml-auto flex gap-3">
+                                <i class="fas fa-map-marker-alt ${hasGeo ? 'text-green-400' : 'text-gray-600'}" title="Геолокация"></i>
+                                <i class="fas fa-camera ${hasPhoto ? 'text-blue-400' : 'text-gray-600'}" title="Фото"></i>
+                            </div>
+                        </div>
+                    `;
+                    card.addEventListener('click', () => showDossierDetails(dossier));
+                    dossierContainer.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error("Не удалось загрузить досье:", error);
+                loader.classList.add('hidden');
+                dossierContainer.innerHTML = `<p class="col-span-full text-center text-red-400">Ошибка при загрузке данных: ${error.message}</p>`;
+            }
+        }
+
+        // Закрытие модального окна
+        closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) { // Закрывать только при клике на фон
+                modal.classList.add('hidden');
             }
         });
-    </script>
 
-    <!-- ========================================================= -->
-    <script>
-        // Ссылка на CSV файл с данными
-        const csvUrl = "https://docs.google.com/spreadsheets/d/1QjizQXOtSEll4qzW07h3ZpAnifuEpf8Fu35tOxQgc4U/export?format=csv&id=1QjizQXOtSEll4qzW07h3ZpAnifuEpf8Fu35tOxQgc4U&gid=0";
-      
-        // Функция для загрузки CSV и обработки данных
-        function loadCSV() {
-          fetch(csvUrl)
-            .then(response => response.text())
-            .then(data => {
-              const rows = data.split("\n");
-              let cellIndex = 1; // Начнем с первой ячейки в таблице
-      
-              // Перебираем строки CSV
-              rows.forEach(row => {
-                const columns = row.split(","); // Разделяем строку на столбцы
-                columns.forEach((cell, colIndex) => {
-                  const cellId = `cell${cellIndex}`;
-                  if (document.getElementById(cellId)) {
-                    document.getElementById(cellId).textContent = cell.trim(); // Заполняем ячейку
-                  }
-                  cellIndex++; // Переходим к следующей ячейке
-                });
-              });
-            })
-            .catch(error => console.error('Ошибка загрузки CSV:', error));
-        }
-      
-        // Загружаем данные после загрузки страницы
-        window.onload = loadCSV;
-      </script>
-      
-<!-- ////////////////////////////////////////////////////////////// -->
+        // Загружаем данные при старте
+        window.addEventListener('DOMContentLoaded', loadDossiers);
+    </script>
 </body>
 </html>
